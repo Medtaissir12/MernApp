@@ -34,7 +34,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "main": "index.js", // Add this line
+  "main": "index.js",
   "eslintConfig": {
     "extends": [
       "react-app",
