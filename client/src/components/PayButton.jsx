@@ -44,9 +44,4 @@ const user = useSelector((state) => state.user.currentUser);
   )
 }
 
-export default PayButton
-
-
-
-
-    const handleCheckout = () => {} 
+export default PayButton;
