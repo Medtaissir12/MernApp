@@ -159,10 +159,12 @@ function FormContainer() {
           <Modal.Title>Success!</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alert variant="success">
-            <i className="bi bi-check-circle-fill"></i> Your message has been
-            sent successfully.
-          </Alert>
+          {showAlert && (
+            <Alert variant="success">
+              <i className="bi bi-check-circle-fill"></i> Your message has been
+              sent successfully.
+            </Alert>
+          )}
         </Modal.Body>
       </Modal>
       <FormContainerWrapper>
