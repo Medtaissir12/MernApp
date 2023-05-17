@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { url } from "../redux/apiCalls";
 import { useState } from "react";
 import { Modal, Button, Alert } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
 
 const StyledButton = styled.button`
   width: 100%;
@@ -58,9 +60,16 @@ const PayButton = ({ cartItems }) => {
           </Alert>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleModalClose}>
-            Close
-          </Button>
+          <Link to="/register">
+            <Button variant="secondary" onClick={handleModalClose}>
+              Register
+            </Button>
+          </Link>
+          <Link to="/login">
+            <Button variant="secondary" onClick={handleModalClose}>
+              Sign In
+            </Button>
+          </Link>
         </Modal.Footer>
       </Modal>
     </>
