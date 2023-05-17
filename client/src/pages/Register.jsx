@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -182,10 +181,12 @@ const Register = () => {
             <Modal.Title>Success!</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Alert variant="success">
-              <i className="bi bi-check-circle-fill"></i> Your account has been
-              created successfully.
-            </Alert>
+            {showAlert && (
+              <Alert variant="success">
+                <i className="bi bi-check-circle-fill"></i> Your account has
+                been created successfully.
+              </Alert>
+            )}
           </Modal.Body>
         </Modal>
         <Wrapper>
