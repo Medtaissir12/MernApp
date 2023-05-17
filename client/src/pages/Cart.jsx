@@ -8,13 +8,8 @@ import Substract from "@mui/icons-material/Remove";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import PayButton from "../components/PayButton";
-
-import { useNavigate } from "react-router-dom";
-import StripeCheckout from "react-stripe-checkout";
 import Announcement from "../components/Announcement";
 import { useSelector, useDispatch } from "react-redux";
-import { userRequest } from "../rqstMethods";
-import { useEffect, useState } from "react";
 import { removeProduct, addProduct, updateProduct } from "../redux/cartRedux";
 
 
@@ -180,15 +175,12 @@ const SummaryItemText = styled.span``;
 const SummaryItemPrice = styled.span``;
 
 
-const KEY =
-  "pk_test_51MrMOWBW08EDkhytrRGncrOU3P5Zglnp68zeDKMp30Oe2pD8e3nZiQINuh1MYvw9a2k5dxeLfUOi88f21cB2bIIB00BSAolSw9";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
  
   const quantity = useSelector((state) => state.cart.quantity);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const handleAddProduct = (product) => {
     const existingProductIndex = cart.products.findIndex(
       (p) => p.id === product.id
