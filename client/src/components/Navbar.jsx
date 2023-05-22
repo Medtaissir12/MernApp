@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { mobile } from "../responsive";
 import SearchIcon from "@mui/icons-material/Search";
 import Badge from "@mui/material/Badge";
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
   padding: 10px 20px;
   display: flex;
   align-items: center;
-  justify-content: space between;
+  justify-content: space-between;
   ${mobile({ padding: "10px 0px" })}
 `;
 
@@ -33,12 +34,13 @@ const Left = styled.div`
 `;
 const Logo = styled.img`
   width: 150px;
-  height: 90px;
-  objet-fit: cover;
-  padding: 10px;
-  ${mobile({ fontSize: "24px" })}
+  height: 70px;
+  object-fit: cover;
+  padding: 5px;
+  ${mobile({ width: "130px", height: "60px", fontSize: "24px" })}
 `;
 const SearchContainer = styled.div`
+  position: relative;
   display: flex;
   width: 110%;
   align-items: center;
@@ -54,6 +56,53 @@ const Input = styled.input`
   background: transparent;
   outline: none;
   padding: 6px 10px;
+`;
+
+const SearchResultsContainer = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+`;
+
+const SearchResult = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5e;
+  }
+`;
+
+const SearchResultImage = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+`;
+
+const SearchResultTitle = styled.span`
+  font-weight: bold;
+`;
+
+const NoResultsMessage = styled.div`
+  padding: 8px;
+  text-align: center;
+  color: #999;
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: black;
 `;
 const Center = styled.div`
   flex: 1;
@@ -77,16 +126,60 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchContainerRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const quantity = useSelector((state) => state.cart.quantity);
   const currentUser = useSelector((state) => state.user.currentUser);
+
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearCart());
     navigate("/");
   };
-  
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(e.target)
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchSearchResults = async () => {
+      setIsSearching(true);
+      try {
+        const response = await axios.get(
+          `https://nbastoreapp.onrender.com/api/products/search?q=${searchTerm}`
+        );
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    if (searchTerm.length > 0) {
+      fetchSearchResults();
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchTerm]);
+
   return (
     <Container>
       <Wrapper>
@@ -96,8 +189,46 @@ const Navbar = () => {
           </Link>
         </Left>
         <Center>
-          <SearchContainer>
-            <Input placeholder="Search" />
+          <SearchContainer ref={searchContainerRef}>
+            <Input
+              type="text"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setIsSearchOpen(true)}
+            />
+            {isSearchOpen && (
+              <SearchResultsContainer>
+                {isSearching ? (
+                  <div>Loading...</div>
+                ) : (
+                  <>
+                    {searchResults.length > 0 ? (
+                      searchResults.map((product) => (
+                        <SearchResult key={product._id}>
+                          <SearchResultImage
+                            src={product.img}
+                            alt={product.title}
+                          />
+
+                          <StyledLink
+                            to={`/product/${product._id}`}
+                            className="search-result-title"
+                          >
+                            {/* Update the link destination */}
+                            <SearchResultTitle>
+                              {product.title}
+                            </SearchResultTitle>
+                          </StyledLink>
+                        </SearchResult>
+                      ))
+                    ) : (
+                      <NoResultsMessage>No results found.</NoResultsMessage>
+                    )}
+                  </>
+                )}
+              </SearchResultsContainer>
+            )}
             <SearchIcon style={{ color: "gray", fontSize: 16, width: "10%" }} />
           </SearchContainer>
         </Center>
