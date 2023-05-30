@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api/";
+const BASE_URL = "https://nbastoreapp.onrender.com/api/";
 const userStorage = JSON.parse(localStorage.getItem("persist:root")).user;
 const currentUser = userStorage ? JSON.parse(userStorage).currentUser : null;
 const TOKEN = currentUser ? currentUser.accessToken : null;
