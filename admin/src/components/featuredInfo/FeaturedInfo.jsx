@@ -1,64 +1,109 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
-import "./featuredInfo.css"
-import { useEffect, useState } from "react";
+import "./featuredInfo.css";
 import { userRequest } from "../../requestMethods";
 
 const FeaturedInfo = () => {
-   const [income, setIncome] = useState([]);
-   const [perc, setPerc] = useState(0);
+  const [revenue, setRevenue] = useState({});
+  const [sales, setSales] = useState(0);
+  const [orderCount, setOrderCount] = useState(0);
+  const [gain, setGain] = useState(0);
 
-   useEffect(() => {
-     const getIncome = async () => {
-       try {
-         const res = await userRequest.get("orders/income");
-         setIncome(res.data);
-         setPerc((res.data[1].total * 100) / res.data[0].total - 100);
-       } catch {}
-     };
-     getIncome();
-   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch revenue data
+        const revenueRes = await userRequest.get("orders/revenue");
+        setRevenue(revenueRes.data);
+
+        // Fetch sales data
+        const salesRes = await userRequest.get("orders/income");
+        const currentMonth = new Date().getMonth() + 1; // Get the current month
+        const currentSales = salesRes.data.find(
+          (item) => item._id === currentMonth
+        );
+
+        if (currentSales) {
+          setSales(currentSales.total);
+        }
+
+        // Fetch order count data
+        const orderCountRes = await userRequest.get("orders/order-count");
+        const currentMonthOrderCount = orderCountRes.data.find(
+          (item) => item.month === currentMonth
+        );
+        if (currentMonthOrderCount) {
+          setOrderCount(currentMonthOrderCount.count);
+          const previousMonthOrderCount = orderCountRes.data.find(
+            (item) => item.month === currentMonth - 1
+          );
+          const previousMonthCount = previousMonthOrderCount
+            ? previousMonthOrderCount.count
+            : 0;
+          const gain = currentMonthOrderCount.count - previousMonthCount;
+          setGain(gain);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="featured">
       <div className="featuredItem">
-        <span className="featuredTitle">Revanue</span>
+        <span className="featuredTitle">Revenue</span>
         <div className="featuredMoneyContainer">
-          <span className="featuredMoney">${income[1]?.total}</span>
+          <span className="featuredMoney">
+            {(revenue.revenue / 100).toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </span>
           <span className="featuredMoneyRate">
-            %{Math.floor(perc)}{" "}
-            {perc < 0 ? (
+            {Math.floor(revenue.percentage)}%{" "}
+            {Math.floor(revenue.percentage) < 0 ? (
               <ArrowDownward className="featuredIcon negative" />
             ) : (
               <ArrowUpward className="featuredIcon" />
             )}
           </span>
         </div>
-        <span className="featuredSub">Compared to last month</span>
+        <span className="featuredSub">In the current month</span>
       </div>
       <div className="featuredItem">
         <span className="featuredTitle">Sales</span>
         <div className="featuredMoneyContainer">
-          <span className="featuredMoney">$4,415</span>
+          <span className="featuredMoney">
+            {(sales / 100).toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </span>
           <span className="featuredMoneyRate">
-            -1.4 <ArrowDownward className="featuredIcon negative" />
+            {sales < 0 ? (
+              <ArrowDownward className="featuredIcon negative" />
+            ) : (
+              <ArrowUpward className="featuredIcon" />
+            )}
           </span>
         </div>
-        <span className="featuredSub">Compared to last month</span>
+        <span className="featuredSub">Total Sales</span>
       </div>
       <div className="featuredItem">
-        <span className="featuredTitle">Cost</span>
+        <span className="featuredTitle">Orders</span>
         <div className="featuredMoneyContainer">
-          <span className="featuredMoney">$2,225</span>
+          <span className="featuredMoney">{orderCount}</span>
           <span className="featuredMoneyRate">
-            +2.4 <ArrowUpward className="featuredIcon" />
+            {gain} <ArrowUpward className="featuredIcon" />
           </span>
         </div>
-        <span className="featuredSub">Compared to last month</span>
+        <span className="featuredSub">In the current month</span>
       </div>
     </div>
-  ); }
-    
+  );
+};
 
-
-
-export default FeaturedInfo
+export default FeaturedInfo;

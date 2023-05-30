@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
+import "./user.css";
 import {
-  CalendarToday,
   LocationSearching,
   MailOutline,
   PermIdentity,
@@ -8,8 +8,14 @@ import {
   Publish,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import "./user.css";
+import { useSelector } from "react-redux";
+
+
+
 const User = () => {
+  const user = useSelector((state) => state.user.currentUser);
+
+
   return (
     <div className="user">
       <div className="userTitleContainer">
@@ -27,31 +33,31 @@ const User = () => {
               className="userShowImg"
             />
             <div className="userShowTopTitle">
-              <span className="userShowUsername">User Name</span>
+              <span className="userShowUsername">{user.username}</span>
             </div>
           </div>
           <div className="userShowBottom">
             <span className="userShowTitle">Account Details</span>
             <div className="userShowInfo">
               <PermIdentity className="userShowIcon" />
-              <span className="userShowInfoTitle">user</span>
+              <span className="userShowInfoTitle">{user.username}</span>
             </div>
             <div className="userShowInfo">
-              <CalendarToday className="userShowIcon" />
-              <span className="userShowInfoTitle">Date of Birth</span>
+              <PermIdentity className="userShowIcon" />
+              <span className="userShowInfoTitle">{user._id}</span>
             </div>
             <span className="userShowTitle">Contact Details</span>
             <div className="userShowInfo">
               <PhoneAndroid className="userShowIcon" />
-              <span className="userShowInfoTitle">+** **** ****</span>
+              <span className="userShowInfoTitle"></span>
             </div>
             <div className="userShowInfo">
               <MailOutline className="userShowIcon" />
-              <span className="userShowInfoTitle">email user</span>
+              <span className="userShowInfoTitle">{user.email}</span>
             </div>
             <div className="userShowInfo">
               <LocationSearching className="userShowIcon" />
-              <span className="userShowInfoTitle">Somewhere | World</span>
+              <span className="userShowInfoTitle">{user.location}</span>
             </div>
           </div>
         </div>
@@ -63,15 +69,23 @@ const User = () => {
                 <label>Username</label>
                 <input
                   type="text"
+                  placeholder={user.username}
+                  className="userUpdateInput"
+                />
+              </div>
+              <div className="userUpdateItem">
+                <label> Name</label>
+                <input
+                  type="text"
                   placeholder="User Name"
                   className="userUpdateInput"
                 />
               </div>
               <div className="userUpdateItem">
-                <label>Full Name</label>
+                <label> Last Name</label>
                 <input
                   type="text"
-                  placeholder="User Full Name"
+                  placeholder="User Last Name"
                   className="userUpdateInput"
                 />
               </div>
@@ -79,7 +93,7 @@ const User = () => {
                 <label>Email</label>
                 <input
                   type="text"
-                  placeholder="email user"
+                  placeholder={user.email}
                   className="userUpdateInput"
                 />
               </div>
@@ -87,7 +101,7 @@ const User = () => {
                 <label>Phone</label>
                 <input
                   type="text"
-                  placeholder="+** **** ****"
+                  placeholder={user.phone}
                   className="userUpdateInput"
                 />
               </div>
@@ -119,6 +133,6 @@ const User = () => {
       </div>
     </div>
   );
-}
+};
 
-export default User
+export default User;

@@ -6,13 +6,27 @@ import {
   PermIdentity,
   Storefront,
   AttachMoney,
-  MailOutline,
-  DynamicFeed,
-  ChatBubbleOutline,
+  LocalShipping
 } from "@mui/icons-material";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
+import { logout } from "../../redux/userRedux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+const handleLogout = () => {
+  dispatch(logout());
+  navigate("/login");
+};
+
+
+
   return (
     <div className="sidebar">
       <div className="sidebarWrapper">
@@ -25,14 +39,18 @@ const Sidebar = () => {
                 Home
               </li>
             </Link>
-            <li className="sidebarListItem">
-              <Timeline className="sidebarIcon" />
-              Analytics
-            </li>
-            <li className="sidebarListItem">
-              <TrendingUp className="sidebarIcon" />
-              Sales
-            </li>
+            <Link to="/" className="link">
+              <li className="sidebarListItem">
+                <Timeline className="sidebarIcon" />
+                Analytics
+              </li>
+            </Link>
+            <Link to="/" className="link">
+              <li className="sidebarListItem">
+                <TrendingUp className="sidebarIcon" />
+                Sales
+              </li>
+            </Link>
           </ul>
         </div>
         <div className="sidebarMenu">
@@ -50,31 +68,31 @@ const Sidebar = () => {
                 Products
               </li>
             </Link>
-            <li className="sidebarListItem">
-              <AttachMoney className="sidebarIcon" />
-              Transactions
-            </li>
+            <Link to="/transactions" className="link">
+              <li className="sidebarListItem">
+                <AttachMoney className="sidebarIcon" />
+                Transactions
+              </li>
+            </Link>
+            <Link to="/orders" className="link">
+              <li className="sidebarListItem">
+                <LocalShipping className="sidebarIcon" />
+                Orders
+              </li>
+            </Link>
           </ul>
         </div>
         <div className="sidebarMenu">
-          <h3 className="sidebarTitle">Notifications</h3>
+          <h3 className="sidebarTitle">Account</h3>
           <ul className="sidebarList">
             <li className="sidebarListItem">
-              <MailOutline className="sidebarIcon" />
-              Mail
-            </li>
-            <li className="sidebarListItem">
-              <DynamicFeed className="sidebarIcon" />
-              Feedback
-            </li>
-            <li className="sidebarListItem">
-              <ChatBubbleOutline className="sidebarIcon" />
-              Messages
+              <LogoutIcon className="sidebarIcon" onClick={handleLogout} />
+              Logout
             </li>
           </ul>
         </div>
-        </div>
       </div>
+    </div>
   );
-}
+};
 export default Sidebar;

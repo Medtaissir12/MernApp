@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link ,useLocation } from "react-router-dom";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./product.css";
 import { useSelector } from "react-redux";
 import { useEffect, useMemo, useState } from "react";
@@ -37,7 +37,9 @@ const Product = () => {
   useEffect(() => {
     const getStats = async () => {
       try {
-        const res = await userRequest.get("orders/income?pid=" + productId);
+        const res = await userRequest.get(
+          "orders/product-money?pid=" + productId
+        );
         const list = res.data.sort((a, b) => {
           return a._id - b._id;
         });
@@ -76,12 +78,8 @@ const Product = () => {
               <span className="productInfoValue">{product._id}</span>
             </div>
             <div className="productInfoItem">
-              <span className="productInfoKey">sales:</span>
-              <span className="productInfoValue">5123</span>
-            </div>
-            <div className="productInfoItem">
               <span className="productInfoKey">in stock:</span>
-              <span className="productInfoValue">{product.inStock}</span>
+              <span className="productInfoValue">true</span>
             </div>
           </div>
         </div>
@@ -115,6 +113,6 @@ const Product = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Product
+export default Product;

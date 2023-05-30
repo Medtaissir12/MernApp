@@ -1,22 +1,27 @@
-import "./userList.css";
+import "./transactions.css";
 import { useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { DeleteOutline } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers, deleteUser } from "../../redux/apiCalls";
 
-const UserList = () => {
+import { getOrders } from "../../redux/apiCalls";
+import { formatDistanceToNow } from "date-fns";
+
+
+
+
+const Transactions = () => {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.user.users);
+  const orders = useSelector((state) => state.order.orders);
+  console.log("These are:",orders);
+
 
   useEffect(() => {
-    getUsers(dispatch);
+    getOrders(dispatch);
   }, [dispatch]);
 
-   const handleDelete = (id) => {
-     deleteUser(id, dispatch);
-   };
+  const handleDelete = () => {};
 
   const columns = [
     { field: "_id", headerName: "ID", width: 90 },
@@ -35,24 +40,41 @@ const UserList = () => {
               }
               alt=""
             />
-            {params.row.username}
+            {params.row.userId}
           </div>
         );
       },
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: "createdAt",
+      headerName: "Date",
       width: 200,
-      valueGetter: (params) => params.row.email,
+      valueGetter: (params) => {
+        const distance = formatDistanceToNow(new Date(params.row.createdAt), {
+          addSuffix: true,
+        });
+        return distance;
+      },
+    },
+
+    {
+      field: "transaction",
+      headerName: "Transaction Volume",
+      width: 160,
+      valueGetter: (params) => {
+        const amount = (params.row.total / 100).toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        });
+        return amount;
+      },
     },
     {
       field: "status",
       headerName: "Status",
       width: 120,
-      renderCell: () => "Active",
+      valueGetter: (params) => params.row.delivery_status,
     },
-
     {
       field: "action",
       headerName: "Action",
@@ -76,7 +98,7 @@ const UserList = () => {
   return (
     <div className="userList">
       <DataGrid
-        rows={users}
+        rows={orders}
         disableSelectionOnClick
         columns={columns}
         getRowId={(row) => row._id}
@@ -87,4 +109,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default Transactions;

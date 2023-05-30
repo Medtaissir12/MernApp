@@ -11,6 +11,7 @@ const ProductList = () => {
   
  const dispatch = useDispatch();
  const products = useSelector((state) => state.product.products);
+ console.log(products);
 
  useEffect(() => {
    getProducts(dispatch);
@@ -40,6 +41,13 @@ const ProductList = () => {
      field: "price",
      headerName: "Price",
      width: 160,
+     valueGetter: (params) => {
+       const price = (params.row.price).toLocaleString("en-US", {
+         style: "currency",
+         currency: "USD",
+       });
+       return price;
+     },
    },
    {
      field: "action",
