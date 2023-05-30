@@ -23,7 +23,7 @@
   padding: 0 15px;
 }
 
-.mega_menu ul li a {
+.mega_menu ul li span {
   text-decoration: none;
   color: #fff;
   text-transform: uppercase;
@@ -59,7 +59,7 @@
   background: #c20d13;
 }
 
-.mega_menu ul li:hover a {
+.mega_menu ul li:hover span {
   color: #fff;
 }
 

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const ContactForm = require("../models/contactForm");
+const ContactForm = require("../models/ContactForm");
 
 router.post("/", async (req, res) => {
   const newContactForm = new ContactForm({

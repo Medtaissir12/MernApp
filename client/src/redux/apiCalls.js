@@ -16,4 +16,4 @@ export const login = async (dispatch, user) => {
 };
 
 
-export const url = "http://localhost:5000/api";
+export const url = "https://nbastoreapp.onrender.com/api";

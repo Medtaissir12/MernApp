@@ -55,12 +55,17 @@ router.get("/find/:id", async (req, res) => {
     res.status(500).json(err);
   }
 });
-// GET PRODUCTS BY SEARCH QUERY
+//Search for products
 router.get("/search", async (req, res) => {
   const query = req.query.q;
+  const regexQuery = new RegExp(query, "i");
   try {
     const products = await Product.find({
-      $text: { $search: query }
+      $or: [
+        { title: { $regex: regexQuery } },
+        { desc: { $regex: regexQuery } },
+        { categories: { $regex: regexQuery } },
+      ],
     });
     res.status(200).json(products);
   } catch (err) {
